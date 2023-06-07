@@ -4,10 +4,7 @@ const { Mutex } = require('..')
 
 test('mutex', (t) => {
   const mutex = new Mutex()
-
-  mutex.lock()
-
-  t.comment('lock held')
+  t.teardown(() => mutex.destroy())
 
   const thread = new Thread(__filename, { data: mutex.handle }, (handle) => {
     const { Mutex } = require('..')
@@ -18,11 +15,10 @@ test('mutex', (t) => {
     mutex.unlock()
   })
 
+  mutex.lock()
   mutex.unlock()
-
-  t.comment('lock opened')
 
   thread.join()
 
-  mutex.destroy()
+  t.pass()
 })

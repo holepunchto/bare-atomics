@@ -4,10 +4,9 @@ const { Semaphore } = require('..')
 
 test('semaphore', (t) => {
   const semaphore = new Semaphore(1)
+  t.teardown(() => semaphore.destroy())
 
   semaphore.wait()
-
-  t.comment('lock held')
 
   const thread = new Thread(__filename, { data: semaphore.handle }, (handle) => {
     const { Semaphore } = require('..')
@@ -17,9 +16,7 @@ test('semaphore', (t) => {
 
   semaphore.wait()
 
-  t.comment('lock opened')
-
   thread.join()
 
-  semaphore.destroy()
+  t.pass()
 })
