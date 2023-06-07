@@ -35,6 +35,8 @@ exports.Mutex = class Mutex {
   }
 
   destroy () {
+    if (this.held) throw new Error('cannot destroy held mutex')
+
     binding.mutexDestroy(this.handle)
   }
 
@@ -75,5 +77,37 @@ exports.Semaphore = class Semaphore {
 
   static from (handle, opts = {}) {
     return new Semaphore({ ...opts, handle })
+  }
+}
+
+exports.Condition = class Condition {
+  constructor (opts = {}) {
+    const {
+      handle = binding.conditionInit()
+    } = opts
+
+    this.handle = handle
+  }
+
+  wait (mutex, timeout = -1) {
+    if (!mutex.held) throw new Error('cannot wait with unheld mutex')
+
+    return binding.conditionWait(this.handle, mutex.handle, timeout)
+  }
+
+  signal () {
+    binding.conditionSignal(this.handle)
+  }
+
+  broadcast () {
+    binding.conditionBroadcast(this.handle)
+  }
+
+  destroy () {
+    binding.conditionDestroy(this.handle)
+  }
+
+  static from (handle, opts = {}) {
+    return new Condition({ ...opts, handle })
   }
 }

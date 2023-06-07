@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <bare.h>
 #include <js.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <uv.h>
 
@@ -11,6 +12,10 @@ typedef struct {
 typedef struct {
   uv_sem_t handle;
 } bare_atomics_semaphore_t;
+
+typedef struct {
+  uv_cond_t handle;
+} bare_atomics_condition_t;
 
 static js_value_t *
 bare_atomics_mutex_init (js_env_t *env, js_callback_info_t *info) {
@@ -254,6 +259,128 @@ bare_atomics_semaphore_post (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
+bare_atomics_condition_init (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  bare_atomics_condition_t *handle = malloc(sizeof(bare_atomics_condition_t));
+
+  err = uv_cond_init((uv_cond_t *) handle);
+  assert(err == 0);
+
+  js_value_t *result;
+  err = js_create_external(env, handle, NULL, NULL, &result);
+  assert(err == 0);
+
+  return result;
+}
+
+static js_value_t *
+bare_atomics_condition_destroy (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, NULL, NULL);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  bare_atomics_condition_t *handle;
+  err = js_get_value_external(env, argv[0], (void **) &handle);
+  assert(err == 0);
+
+  uv_cond_destroy((uv_cond_t *) handle);
+
+  free(handle);
+
+  return NULL;
+}
+
+static js_value_t *
+bare_atomics_condition_wait (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 3;
+  js_value_t *argv[3];
+
+  err = js_get_callback_info(env, info, &argc, argv, NULL, NULL);
+  assert(err == 0);
+
+  assert(argc == 3);
+
+  bare_atomics_condition_t *handle;
+  err = js_get_value_external(env, argv[0], (void **) &handle);
+  assert(err == 0);
+
+  bare_atomics_mutex_t *mutex;
+  err = js_get_value_external(env, argv[1], (void **) &mutex);
+  assert(err == 0);
+
+  int64_t timeout;
+  err = js_get_value_int64(env, argv[2], &timeout);
+  assert(err == 0);
+
+  js_value_t *success;
+
+  if (timeout == -1) {
+    uv_cond_wait((uv_cond_t *) handle, (uv_mutex_t *) mutex);
+
+    err = js_get_boolean(env, true, &success);
+    assert(err == 0);
+  } else {
+    err = uv_cond_timedwait((uv_cond_t *) handle, (uv_mutex_t *) mutex, timeout);
+
+    err = js_get_boolean(env, err == 0, &success);
+    assert(err == 0);
+  }
+
+  return success;
+}
+
+static js_value_t *
+bare_atomics_condition_signal (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, NULL, NULL);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  bare_atomics_condition_t *handle;
+  err = js_get_value_external(env, argv[0], (void **) &handle);
+  assert(err == 0);
+
+  uv_cond_signal((uv_cond_t *) handle);
+
+  return NULL;
+}
+
+static js_value_t *
+bare_atomics_condition_broadcast (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, NULL, NULL);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  bare_atomics_condition_t *handle;
+  err = js_get_value_external(env, argv[0], (void **) &handle);
+  assert(err == 0);
+
+  uv_cond_broadcast((uv_cond_t *) handle);
+
+  return NULL;
+}
+
+static js_value_t *
 init (js_env_t *env, js_value_t *exports) {
 #define V(name, fn) \
   { \
@@ -272,6 +399,12 @@ init (js_env_t *env, js_value_t *exports) {
   V("semaphoreWait", bare_atomics_semaphore_wait)
   V("semaphoreTryWait", bare_atomics_semaphore_try_wait)
   V("semaphorePost", bare_atomics_semaphore_post)
+
+  V("conditionInit", bare_atomics_condition_init)
+  V("conditionDestroy", bare_atomics_condition_destroy)
+  V("conditionWait", bare_atomics_condition_wait)
+  V("conditionSignal", bare_atomics_condition_signal)
+  V("conditionBroadcast", bare_atomics_condition_broadcast)
 #undef V
 
   return exports;
