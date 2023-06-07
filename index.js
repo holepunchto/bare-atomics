@@ -1,0 +1,1 @@
+const binding = require('./binding')
