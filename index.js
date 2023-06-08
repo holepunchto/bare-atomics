@@ -111,3 +111,30 @@ exports.Condition = class Condition {
     return new Condition({ ...opts, handle })
   }
 }
+
+exports.Barrier = class Barrier {
+  constructor (count, opts = {}) {
+    if (typeof count === 'object') {
+      opts = count
+      count = 0
+    }
+
+    const {
+      handle = binding.barrierInit(count)
+    } = opts
+
+    this.handle = handle
+  }
+
+  wait () {
+    return binding.barrierWait(this.handle)
+  }
+
+  destroy () {
+    binding.barrierDestroy(this.handle)
+  }
+
+  static from (handle, opts = {}) {
+    return new Barrier({ ...opts, handle })
+  }
+}

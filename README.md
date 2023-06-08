@@ -76,6 +76,20 @@ An `External` with a pointer to the underlying condition handle.
 
 #### `condition.destroy()`
 
+### Barrier
+
+#### `const barrier = new Barrier(count)`
+
+#### `const barrier = Barrier.from(handle)`
+
+#### `barrier.handle`
+
+An `External` with a pointer to the underlying barrier handle.
+
+#### `const success = barrier.wait()`
+
+#### `barrier.destroy()`
+
 ## License
 
 Apache-2.0

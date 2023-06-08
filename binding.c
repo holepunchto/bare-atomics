@@ -17,6 +17,10 @@ typedef struct {
   uv_cond_t handle;
 } bare_atomics_condition_t;
 
+typedef struct {
+  uv_barrier_t handle;
+} bare_atomics_barrier_t;
+
 static js_value_t *
 bare_atomics_mutex_init (js_env_t *env, js_callback_info_t *info) {
   int err;
@@ -381,6 +385,82 @@ bare_atomics_condition_broadcast (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
+bare_atomics_barrier_init (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, NULL, NULL);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  uint32_t count;
+  err = js_get_value_uint32(env, argv[0], &count);
+  assert(err == 0);
+
+  bare_atomics_barrier_t *handle = malloc(sizeof(bare_atomics_barrier_t));
+
+  err = uv_barrier_init((uv_barrier_t *) handle, count);
+  assert(err == 0);
+
+  js_value_t *result;
+  err = js_create_external(env, handle, NULL, NULL, &result);
+  assert(err == 0);
+
+  return result;
+}
+
+static js_value_t *
+bare_atomics_barrier_destroy (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, NULL, NULL);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  bare_atomics_barrier_t *handle;
+  err = js_get_value_external(env, argv[0], (void **) &handle);
+  assert(err == 0);
+
+  uv_barrier_destroy((uv_barrier_t *) handle);
+
+  free(handle);
+
+  return NULL;
+}
+
+static js_value_t *
+bare_atomics_barrier_wait (js_env_t *env, js_callback_info_t *info) {
+  int err;
+
+  size_t argc = 1;
+  js_value_t *argv[1];
+
+  err = js_get_callback_info(env, info, &argc, argv, NULL, NULL);
+  assert(err == 0);
+
+  assert(argc == 1);
+
+  bare_atomics_barrier_t *handle;
+  err = js_get_value_external(env, argv[0], (void **) &handle);
+  assert(err == 0);
+
+  err = uv_barrier_wait((uv_barrier_t *) handle);
+
+  js_value_t *success;
+  err = js_get_boolean(env, err > 0, &success);
+  assert(err == 0);
+
+  return success;
+}
+
+static js_value_t *
 init (js_env_t *env, js_value_t *exports) {
 #define V(name, fn) \
   { \
@@ -405,6 +485,10 @@ init (js_env_t *env, js_value_t *exports) {
   V("conditionWait", bare_atomics_condition_wait)
   V("conditionSignal", bare_atomics_condition_signal)
   V("conditionBroadcast", bare_atomics_condition_broadcast)
+
+  V("barrierInit", bare_atomics_barrier_init)
+  V("barrierDestroy", bare_atomics_barrier_destroy)
+  V("barrierWait", bare_atomics_barrier_wait)
 #undef V
 
   return exports;
