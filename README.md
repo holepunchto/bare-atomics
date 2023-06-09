@@ -1,6 +1,6 @@
 # bare-atomics
 
-Native synchronization primitives for JavaScript
+Native synchronization primitives for JavaScript.
 
 ```
 npm i bare-atomics
