@@ -1,6 +1,7 @@
-const Thread = require('thread')
+/* global Bare */
 const test = require('brittle')
 const { Barrier } = require('..')
+const { Thread } = Bare
 
 test('barrier', (t) => {
   const barrier = new Barrier(2)

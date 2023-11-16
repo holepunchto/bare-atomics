@@ -1,6 +1,7 @@
-const Thread = require('thread')
+/* global Bare */
 const test = require('brittle')
 const { Semaphore } = require('..')
+const { Thread } = Bare
 
 test('semaphore', (t) => {
   const semaphore = new Semaphore(1)

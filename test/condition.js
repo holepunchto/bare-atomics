@@ -1,6 +1,7 @@
-const Thread = require('thread')
+/* global Bare */
 const test = require('brittle')
 const { Condition, Mutex } = require('..')
+const { Thread } = Bare
 
 test('condition', (t) => {
   const condition = new Condition()
