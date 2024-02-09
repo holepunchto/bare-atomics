@@ -10,6 +10,7 @@
     "CMakeLists.txt",
     "prebuilds"
   ],
+  "addon": true,
   "scripts": {
     "test": "standard && bare test/all.js"
   },
