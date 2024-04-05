@@ -26,7 +26,7 @@ Options are the same as `new Mutex()`.
 
 #### `mutex.handle`
 
-An `External` with a pointer to the underlying mutex handle.
+A `SharedArrayBuffer` with the underlying mutex handle.
 
 #### `mutex.held`
 
@@ -48,7 +48,7 @@ Whether or not the current thread currently holds the mutex.
 
 #### `semaphore.handle`
 
-An `External` with a pointer to the underlying semaphore handle.
+A `SharedArrayBuffer` with the underlying semaphore handle.
 
 #### `semaphore.wait()`
 
@@ -66,7 +66,7 @@ An `External` with a pointer to the underlying semaphore handle.
 
 #### `condition.handle`
 
-An `External` with a pointer to the underlying condition handle.
+A `SharedArrayBuffer` with the underlying condition handle.
 
 #### `const success = condition.wait(mutex[, timeout])`
 
@@ -84,7 +84,7 @@ An `External` with a pointer to the underlying condition handle.
 
 #### `barrier.handle`
 
-An `External` with a pointer to the underlying barrier handle.
+A `SharedArrayBuffer` with the underlying barrier handle.
 
 #### `const success = barrier.wait()`
 
