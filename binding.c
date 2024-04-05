@@ -2,7 +2,6 @@
 #include <bare.h>
 #include <js.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <uv.h>
 
 typedef struct {
@@ -37,21 +36,21 @@ bare_atomics_mutex_init (js_env_t *env, js_callback_info_t *info) {
   err = js_get_value_bool(env, argv[0], &recursive);
   assert(err == 0);
 
-  bare_atomics_mutex_t *handle = malloc(sizeof(bare_atomics_mutex_t));
+  js_value_t *handle;
+
+  bare_atomics_mutex_t *mutex;
+  err = js_create_sharedarraybuffer(env, sizeof(bare_atomics_mutex_t), (void **) &mutex, &handle);
+  assert(err == 0);
 
   if (recursive) {
-    err = uv_mutex_init_recursive((uv_mutex_t *) handle);
+    err = uv_mutex_init_recursive(&mutex->handle);
   } else {
-    err = uv_mutex_init((uv_mutex_t *) handle);
+    err = uv_mutex_init(&mutex->handle);
   }
 
   assert(err == 0);
 
-  js_value_t *result;
-  err = js_create_external(env, handle, NULL, NULL, &result);
-  assert(err == 0);
-
-  return result;
+  return handle;
 }
 
 static js_value_t *
@@ -66,13 +65,11 @@ bare_atomics_mutex_destroy (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_mutex_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_mutex_t *mutex;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &mutex, NULL);
   assert(err == 0);
 
-  uv_mutex_destroy((uv_mutex_t *) handle);
-
-  free(handle);
+  uv_mutex_destroy(&mutex->handle);
 
   return NULL;
 }
@@ -89,11 +86,11 @@ bare_atomics_mutex_lock (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_mutex_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_mutex_t *mutex;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &mutex, NULL);
   assert(err == 0);
 
-  uv_mutex_lock((uv_mutex_t *) handle);
+  uv_mutex_lock(&mutex->handle);
 
   return NULL;
 }
@@ -110,11 +107,11 @@ bare_atomics_mutex_try_lock (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_mutex_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_mutex_t *mutex;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &mutex, NULL);
   assert(err == 0);
 
-  err = uv_mutex_trylock((uv_mutex_t *) handle);
+  err = uv_mutex_trylock(&mutex->handle);
 
   js_value_t *success;
   err = js_get_boolean(env, err == 0, &success);
@@ -135,11 +132,11 @@ bare_atomics_mutex_unlock (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_mutex_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_mutex_t *mutex;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &mutex, NULL);
   assert(err == 0);
 
-  uv_mutex_unlock((uv_mutex_t *) handle);
+  uv_mutex_unlock(&mutex->handle);
 
   return NULL;
 }
@@ -160,16 +157,16 @@ bare_atomics_semaphore_init (js_env_t *env, js_callback_info_t *info) {
   err = js_get_value_uint32(env, argv[0], &value);
   assert(err == 0);
 
-  bare_atomics_semaphore_t *handle = malloc(sizeof(bare_atomics_semaphore_t));
+  js_value_t *handle;
 
-  err = uv_sem_init((uv_sem_t *) handle, value);
+  bare_atomics_semaphore_t *semaphore;
+  err = js_create_sharedarraybuffer(env, sizeof(bare_atomics_semaphore_t), (void **) &semaphore, &handle);
   assert(err == 0);
 
-  js_value_t *result;
-  err = js_create_external(env, handle, NULL, NULL, &result);
+  err = uv_sem_init(&semaphore->handle, value);
   assert(err == 0);
 
-  return result;
+  return handle;
 }
 
 static js_value_t *
@@ -184,13 +181,11 @@ bare_atomics_semaphore_destroy (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_semaphore_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_semaphore_t *semaphore;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &semaphore, NULL);
   assert(err == 0);
 
-  uv_sem_destroy((uv_sem_t *) handle);
-
-  free(handle);
+  uv_sem_destroy(&semaphore->handle);
 
   return NULL;
 }
@@ -207,11 +202,11 @@ bare_atomics_semaphore_wait (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_semaphore_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_semaphore_t *semaphore;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &semaphore, NULL);
   assert(err == 0);
 
-  uv_sem_wait((uv_sem_t *) handle);
+  uv_sem_wait(&semaphore->handle);
 
   return NULL;
 }
@@ -228,11 +223,11 @@ bare_atomics_semaphore_try_wait (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_semaphore_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_semaphore_t *semaphore;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &semaphore, NULL);
   assert(err == 0);
 
-  err = uv_sem_trywait((uv_sem_t *) handle);
+  err = uv_sem_trywait(&semaphore->handle);
 
   js_value_t *success;
   err = js_get_boolean(env, err == 0, &success);
@@ -253,11 +248,11 @@ bare_atomics_semaphore_post (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_semaphore_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_semaphore_t *semaphore;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &semaphore, NULL);
   assert(err == 0);
 
-  uv_sem_post((uv_sem_t *) handle);
+  uv_sem_post(&semaphore->handle);
 
   return NULL;
 }
@@ -266,16 +261,16 @@ static js_value_t *
 bare_atomics_condition_init (js_env_t *env, js_callback_info_t *info) {
   int err;
 
-  bare_atomics_condition_t *handle = malloc(sizeof(bare_atomics_condition_t));
+  js_value_t *handle;
 
-  err = uv_cond_init((uv_cond_t *) handle);
+  bare_atomics_condition_t *condition;
+  err = js_create_sharedarraybuffer(env, sizeof(bare_atomics_condition_t), (void **) &condition, &handle);
   assert(err == 0);
 
-  js_value_t *result;
-  err = js_create_external(env, handle, NULL, NULL, &result);
+  err = uv_cond_init(&condition->handle);
   assert(err == 0);
 
-  return result;
+  return handle;
 }
 
 static js_value_t *
@@ -290,13 +285,11 @@ bare_atomics_condition_destroy (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_condition_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_condition_t *condition;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &condition, NULL);
   assert(err == 0);
 
-  uv_cond_destroy((uv_cond_t *) handle);
-
-  free(handle);
+  uv_cond_destroy(&condition->handle);
 
   return NULL;
 }
@@ -313,12 +306,12 @@ bare_atomics_condition_wait (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 3);
 
-  bare_atomics_condition_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_condition_t *condition;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &condition, NULL);
   assert(err == 0);
 
   bare_atomics_mutex_t *mutex;
-  err = js_get_value_external(env, argv[1], (void **) &mutex);
+  err = js_get_sharedarraybuffer_info(env, argv[1], (void **) &mutex, NULL);
   assert(err == 0);
 
   int64_t timeout;
@@ -328,12 +321,12 @@ bare_atomics_condition_wait (js_env_t *env, js_callback_info_t *info) {
   js_value_t *success;
 
   if (timeout == -1) {
-    uv_cond_wait((uv_cond_t *) handle, (uv_mutex_t *) mutex);
+    uv_cond_wait(&condition->handle, &mutex->handle);
 
     err = js_get_boolean(env, true, &success);
     assert(err == 0);
   } else {
-    err = uv_cond_timedwait((uv_cond_t *) handle, (uv_mutex_t *) mutex, timeout);
+    err = uv_cond_timedwait(&condition->handle, &mutex->handle, timeout);
 
     err = js_get_boolean(env, err == 0, &success);
     assert(err == 0);
@@ -354,11 +347,11 @@ bare_atomics_condition_signal (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_condition_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_condition_t *condition;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &condition, NULL);
   assert(err == 0);
 
-  uv_cond_signal((uv_cond_t *) handle);
+  uv_cond_signal(&condition->handle);
 
   return NULL;
 }
@@ -375,11 +368,11 @@ bare_atomics_condition_broadcast (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_condition_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_condition_t *condition;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &condition, NULL);
   assert(err == 0);
 
-  uv_cond_broadcast((uv_cond_t *) handle);
+  uv_cond_broadcast(&condition->handle);
 
   return NULL;
 }
@@ -400,16 +393,16 @@ bare_atomics_barrier_init (js_env_t *env, js_callback_info_t *info) {
   err = js_get_value_uint32(env, argv[0], &count);
   assert(err == 0);
 
-  bare_atomics_barrier_t *handle = malloc(sizeof(bare_atomics_barrier_t));
+  js_value_t *handle;
 
-  err = uv_barrier_init((uv_barrier_t *) handle, count);
+  bare_atomics_barrier_t *barrier;
+  err = js_create_sharedarraybuffer(env, sizeof(bare_atomics_barrier_t), (void **) &barrier, &handle);
   assert(err == 0);
 
-  js_value_t *result;
-  err = js_create_external(env, handle, NULL, NULL, &result);
+  err = uv_barrier_init(&barrier->handle, count);
   assert(err == 0);
 
-  return result;
+  return handle;
 }
 
 static js_value_t *
@@ -424,13 +417,11 @@ bare_atomics_barrier_destroy (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_barrier_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_barrier_t *barrier;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &barrier, NULL);
   assert(err == 0);
 
-  uv_barrier_destroy((uv_barrier_t *) handle);
-
-  free(handle);
+  uv_barrier_destroy(&barrier->handle);
 
   return NULL;
 }
@@ -447,11 +438,11 @@ bare_atomics_barrier_wait (js_env_t *env, js_callback_info_t *info) {
 
   assert(argc == 1);
 
-  bare_atomics_barrier_t *handle;
-  err = js_get_value_external(env, argv[0], (void **) &handle);
+  bare_atomics_barrier_t *barrier;
+  err = js_get_sharedarraybuffer_info(env, argv[0], (void **) &barrier, NULL);
   assert(err == 0);
 
-  err = uv_barrier_wait((uv_barrier_t *) handle);
+  err = uv_barrier_wait(&barrier->handle);
 
   js_value_t *success;
   err = js_get_boolean(env, err > 0, &success);
