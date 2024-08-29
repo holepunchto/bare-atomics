@@ -1,6 +1,6 @@
 {
   "name": "bare-atomics",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Native synchronization primitives for JavaScript",
   "main": "index.js",
   "files": [
