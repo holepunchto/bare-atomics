@@ -452,13 +452,18 @@ bare_atomics_barrier_wait (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-init (js_env_t *env, js_value_t *exports) {
+bare_atomics_exports (js_env_t *env, js_value_t *exports) {
+  int err;
+
 #define V(name, fn) \
   { \
     js_value_t *val; \
-    js_create_function(env, name, -1, fn, NULL, &val); \
-    js_set_named_property(env, exports, name, val); \
+    err = js_create_function(env, name, -1, fn, NULL, &val); \
+    assert(err == 0); \
+    err = js_set_named_property(env, exports, name, val); \
+    assert(err == 0); \
   }
+
   V("mutexInit", bare_atomics_mutex_init)
   V("mutexDestroy", bare_atomics_mutex_destroy)
   V("mutexLock", bare_atomics_mutex_lock)
@@ -485,4 +490,4 @@ init (js_env_t *env, js_value_t *exports) {
   return exports;
 }
 
-BARE_MODULE(bare_atomics, init)
+BARE_MODULE(bare_atomics, bare_atomics_exports)
