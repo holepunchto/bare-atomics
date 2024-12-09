@@ -23,7 +23,7 @@ exports.Mutex = class Mutex {
   tryLock () {
     if (this.held && !this.recursive) throw new Error('cannot relock already held mutex')
 
-    binding.mutexTryLock(this.handle)
+    return binding.mutexTryLock(this.handle)
   }
 
   unlock () {

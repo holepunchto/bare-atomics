@@ -2,9 +2,15 @@
   "name": "bare-atomics",
   "version": "3.0.5",
   "description": "Native synchronization primitives for JavaScript",
-  "main": "index.js",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
   "files": [
     "index.js",
+    "index.d.ts",
     "binding.c",
     "binding.js",
     "CMakeLists.txt",
