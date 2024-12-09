@@ -2,7 +2,7 @@ interface MutexOptions {
   recursive?: boolean
 }
 
-export declare class Mutex {
+export class Mutex {
   constructor(opts?: MutexOptions)
 
   static from(handle: SharedArrayBuffer, opts?: MutexOptions): Mutex
@@ -17,7 +17,7 @@ export declare class Mutex {
   destroy(): void
 }
 
-export declare class Semaphore {
+export class Semaphore {
   constructor(value: any)
 
   static from(handle: SharedArrayBuffer): Semaphore
@@ -30,7 +30,7 @@ export declare class Semaphore {
   destroy(): void
 }
 
-export declare class Condition {
+export class Condition {
   static from(handle: SharedArrayBuffer): Condition
 
   handle: SharedArrayBuffer
@@ -41,7 +41,7 @@ export declare class Condition {
   destroy(): void
 }
 
-export declare class Barrier {
+export class Barrier {
   constructor(count: number)
 
   static from(handle: SharedArrayBuffer): Barrier
