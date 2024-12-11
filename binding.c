@@ -21,7 +21,7 @@ typedef struct {
 } bare_atomics_barrier_t;
 
 static js_value_t *
-bare_atomics_mutex_init (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_mutex_init(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -54,7 +54,7 @@ bare_atomics_mutex_init (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_mutex_destroy (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_mutex_destroy(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -75,7 +75,7 @@ bare_atomics_mutex_destroy (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_mutex_lock (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_mutex_lock(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -96,7 +96,7 @@ bare_atomics_mutex_lock (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_mutex_try_lock (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_mutex_try_lock(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -121,7 +121,7 @@ bare_atomics_mutex_try_lock (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_mutex_unlock (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_mutex_unlock(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -142,7 +142,7 @@ bare_atomics_mutex_unlock (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_semaphore_init (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_semaphore_init(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -170,7 +170,7 @@ bare_atomics_semaphore_init (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_semaphore_destroy (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_semaphore_destroy(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -191,7 +191,7 @@ bare_atomics_semaphore_destroy (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_semaphore_wait (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_semaphore_wait(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -212,7 +212,7 @@ bare_atomics_semaphore_wait (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_semaphore_try_wait (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_semaphore_try_wait(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -237,7 +237,7 @@ bare_atomics_semaphore_try_wait (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_semaphore_post (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_semaphore_post(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -258,7 +258,7 @@ bare_atomics_semaphore_post (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_condition_init (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_condition_init(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   js_value_t *handle;
@@ -274,7 +274,7 @@ bare_atomics_condition_init (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_condition_destroy (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_condition_destroy(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -295,7 +295,7 @@ bare_atomics_condition_destroy (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_condition_wait (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_condition_wait(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 3;
@@ -336,7 +336,7 @@ bare_atomics_condition_wait (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_condition_signal (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_condition_signal(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -357,7 +357,7 @@ bare_atomics_condition_signal (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_condition_broadcast (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_condition_broadcast(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -378,7 +378,7 @@ bare_atomics_condition_broadcast (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_barrier_init (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_barrier_init(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -406,7 +406,7 @@ bare_atomics_barrier_init (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_barrier_destroy (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_barrier_destroy(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -427,7 +427,7 @@ bare_atomics_barrier_destroy (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_barrier_wait (js_env_t *env, js_callback_info_t *info) {
+bare_atomics_barrier_wait(js_env_t *env, js_callback_info_t *info) {
   int err;
 
   size_t argc = 1;
@@ -452,7 +452,7 @@ bare_atomics_barrier_wait (js_env_t *env, js_callback_info_t *info) {
 }
 
 static js_value_t *
-bare_atomics_exports (js_env_t *env, js_value_t *exports) {
+bare_atomics_exports(js_env_t *env, js_value_t *exports) {
   int err;
 
 #define V(name, fn) \
