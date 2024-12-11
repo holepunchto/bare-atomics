@@ -9,11 +9,15 @@ test('semaphore', (t) => {
 
   semaphore.wait()
 
-  const thread = new Thread(__filename, { data: semaphore.handle }, (handle) => {
-    const { Semaphore } = require('..')
+  const thread = new Thread(
+    __filename,
+    { data: semaphore.handle },
+    (handle) => {
+      const { Semaphore } = require('..')
 
-    Semaphore.from(handle).post()
-  })
+      Semaphore.from(handle).post()
+    }
+  )
 
   semaphore.wait()
 

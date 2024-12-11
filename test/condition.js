@@ -7,11 +7,15 @@ test('condition', (t) => {
   const condition = new Condition()
   t.teardown(() => condition.destroy())
 
-  const thread = new Thread(__filename, { data: condition.handle }, (handle) => {
-    const { Condition } = require('..')
+  const thread = new Thread(
+    __filename,
+    { data: condition.handle },
+    (handle) => {
+      const { Condition } = require('..')
 
-    Condition.from(handle).signal()
-  })
+      Condition.from(handle).signal()
+    }
+  )
 
   const mutex = new Mutex()
   t.teardown(() => mutex.destroy())
