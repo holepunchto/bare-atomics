@@ -1,4 +1,3 @@
-/* global Bare */
 const test = require('brittle')
 const { Condition, Mutex } = require('..')
 const { Thread } = Bare

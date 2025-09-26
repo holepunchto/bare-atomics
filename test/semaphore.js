@@ -1,4 +1,3 @@
-/* global Bare */
 const test = require('brittle')
 const { Semaphore } = require('..')
 const { Thread } = Bare
