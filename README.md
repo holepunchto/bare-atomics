@@ -6,89 +6,174 @@ Native synchronization primitives for JavaScript.
 npm i bare-atomics
 ```
 
+<!-- bare-refgen:api start -->
+
 ## API
 
 ### Mutex
 
-#### `const mutex = new Mutex([options])`
+#### `new Mutex(opts?: MutexOptions)`
 
-Options include:
+**Parameters**
 
-```js
-{
-  recursive: false
-}
-```
+| Parameter | Type           | Default | Description                                                                                                                                           |
+| --------- | -------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `opts?`   | `MutexOptions` | —       | Options; set `recursive: true` to let the owning thread lock the mutex more than once (default `false`). May also carry an existing `handle` to wrap. |
 
-#### `const mutex = Mutex.from(handle[, options])`
+#### `Mutex.destroy(): void`
 
-Options are the same as `new Mutex()`.
+**Throws**
 
-#### `mutex.handle`
+- The mutex is still held.
+
+#### `Mutex.handle: SharedArrayBuffer`
 
 A `SharedArrayBuffer` with the underlying mutex handle.
 
-#### `mutex.held`
+#### `held: boolean`
 
 Whether or not the current thread currently holds the mutex.
 
-#### `mutex.lock()`
+#### `lock(): void`
 
-#### `const success = mutex.tryLock()`
+**Throws**
 
-#### `mutex.unlock()`
+- The mutex is already held and was not created with `recursive: true`.
 
-#### `mutex.destroy()`
+#### `Mutex.from(handle: SharedArrayBuffer, opts?: MutexOptions): Mutex`
+
+Create a `Mutex` from an existing `handle`; options are the same as `new Mutex()`.
+
+**Parameters**
+
+| Parameter | Type                | Default | Description                                                                    |
+| --------- | ------------------- | ------- | ------------------------------------------------------------------------------ |
+| `handle`  | `SharedArrayBuffer` | —       | A `SharedArrayBuffer` holding an existing mutex, as exposed by `Mutex.handle`. |
+| `opts?`   | `MutexOptions`      | —       | Options, the same as `new Mutex()`.                                            |
+
+**Returns** `Mutex` — A `Mutex` sharing the underlying `handle`.
+
+#### `recursive: boolean`
+
+#### `tryLock(): boolean`
+
+**Throws**
+
+- The mutex is already held and was not created with `recursive: true`.
+
+#### `unlock(): void`
+
+**Throws**
+
+- The mutex is not currently held.
 
 ### Semaphore
 
-#### `const semaphore = new Semaphore(value)`
+#### `new Semaphore(value: any)`
 
-#### `const semaphore = Semaphore.from(handle)`
+**Parameters**
 
-#### `semaphore.handle`
+| Parameter | Type  | Default | Description                                        |
+| --------- | ----- | ------- | -------------------------------------------------- |
+| `value`   | `any` | —       | The initial value (permit count) of the semaphore. |
 
-A `SharedArrayBuffer` with the underlying semaphore handle.
+#### `Semaphore.destroy(): void`
 
-#### `semaphore.wait()`
+**Throws**
 
-#### `const success = semaphore.tryWait()`
+- The mutex is still held.
 
-#### `semaphore.post()`
+#### `Semaphore.handle: SharedArrayBuffer`
 
-#### `semaphore.destroy()`
+A `SharedArrayBuffer` with the underlying mutex handle.
+
+#### `post(): void`
+
+#### `Semaphore.from(handle: SharedArrayBuffer): Semaphore`
+
+**Parameters**
+
+| Parameter | Type                | Default | Description                                                                            |
+| --------- | ------------------- | ------- | -------------------------------------------------------------------------------------- |
+| `handle`  | `SharedArrayBuffer` | —       | A `SharedArrayBuffer` holding an existing semaphore, as exposed by `Semaphore.handle`. |
+
+**Returns** `Semaphore` — A `Semaphore` sharing the underlying `handle`.
+
+#### `tryWait(): boolean`
+
+#### `wait(): void`
+
+**Throws**
+
+- The associated mutex is not held by the current thread.
 
 ### Condition
 
-#### `const condition = new Condition()`
+#### `broadcast(): void`
 
-#### `const condition = Condition.from(handle)`
+#### `Condition.from(handle: SharedArrayBuffer): Condition`
 
-#### `condition.handle`
+**Parameters**
 
-A `SharedArrayBuffer` with the underlying condition handle.
+| Parameter | Type                | Default | Description                                                                                     |
+| --------- | ------------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| `handle`  | `SharedArrayBuffer` | —       | A `SharedArrayBuffer` holding an existing condition variable, as exposed by `Condition.handle`. |
 
-#### `const success = condition.wait(mutex[, timeout])`
+**Returns** `Condition` — A `Condition` sharing the underlying `handle`.
 
-#### `condition.signal()`
+#### `Condition.destroy(): void`
 
-#### `condition.broadcast()`
+#### `Condition.handle: SharedArrayBuffer`
 
-#### `condition.destroy()`
+A `SharedArrayBuffer` with the underlying mutex handle.
+
+#### `signal(): void`
+
+#### `Condition.wait(): boolean`
+
+**Throws**
+
+- The associated mutex is not held by the current thread.
 
 ### Barrier
 
-#### `const barrier = new Barrier(count)`
+#### `new Barrier(count: number)`
 
-#### `const barrier = Barrier.from(handle)`
+**Parameters**
 
-#### `barrier.handle`
+| Parameter | Type     | Default | Description                                                                                              |
+| --------- | -------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| `count`   | `number` | —       | The number of threads that must reach the barrier (call `wait()`) before they are all released together. |
 
-A `SharedArrayBuffer` with the underlying barrier handle.
+#### `Barrier.from(handle: SharedArrayBuffer): Barrier`
 
-#### `const success = barrier.wait()`
+**Parameters**
 
-#### `barrier.destroy()`
+| Parameter | Type                | Default | Description                                                                        |
+| --------- | ------------------- | ------- | ---------------------------------------------------------------------------------- |
+| `handle`  | `SharedArrayBuffer` | —       | A `SharedArrayBuffer` holding an existing barrier, as exposed by `Barrier.handle`. |
+
+**Returns** `Barrier` — A `Barrier` sharing the underlying `handle`.
+
+#### `Barrier.destroy(): void`
+
+#### `Barrier.handle: SharedArrayBuffer`
+
+A `SharedArrayBuffer` with the underlying mutex handle.
+
+#### `Barrier.wait(): boolean`
+
+### Types
+
+#### `MutexOptions`
+
+```ts
+interface MutexOptions {
+  recursive?: boolean
+}
+```
+
+<!-- bare-refgen:api end -->
 
 ## License
 
