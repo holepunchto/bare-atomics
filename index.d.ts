@@ -4,7 +4,8 @@ interface MutexOptions {
 
 export class Mutex {
   /**
-   * @param opts - Options; set `recursive: true` to let the owning thread lock the mutex more than once (default `false`). May also carry an existing `handle` to wrap.
+   * @param opts - Options; set `recursive: true` to let the owning thread lock the mutex more than
+   * once (default `false`). May also carry an existing `handle` to wrap.
    */
   constructor(opts?: MutexOptions)
 
@@ -47,7 +48,8 @@ export class Semaphore {
   constructor(value: any)
 
   /**
-   * @param handle - A `SharedArrayBuffer` holding an existing semaphore, as exposed by `Semaphore.handle`.
+   * @param handle - A `SharedArrayBuffer` holding an existing semaphore, as exposed by
+   * `Semaphore.handle`.
    * @returns A `Semaphore` sharing the underlying `handle`.
    */
   static from(handle: SharedArrayBuffer): Semaphore
@@ -68,7 +70,8 @@ export class Semaphore {
 
 export class Condition {
   /**
-   * @param handle - A `SharedArrayBuffer` holding an existing condition variable, as exposed by `Condition.handle`.
+   * @param handle - A `SharedArrayBuffer` holding an existing condition variable, as exposed by
+   * `Condition.handle`.
    * @returns A `Condition` sharing the underlying `handle`.
    */
   static from(handle: SharedArrayBuffer): Condition
@@ -86,12 +89,14 @@ export class Condition {
 
 export class Barrier {
   /**
-   * @param count - The number of threads that must reach the barrier (call `wait()`) before they are all released together.
+   * @param count - The number of threads that must reach the barrier (call `wait()`) before they
+   * are all released together.
    */
   constructor(count: number)
 
   /**
-   * @param handle - A `SharedArrayBuffer` holding an existing barrier, as exposed by `Barrier.handle`.
+   * @param handle - A `SharedArrayBuffer` holding an existing barrier, as exposed by
+   * `Barrier.handle`.
    * @returns A `Barrier` sharing the underlying `handle`.
    */
   static from(handle: SharedArrayBuffer): Barrier
