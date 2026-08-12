@@ -8,7 +8,7 @@ npm i bare-atomics
 
 ## API
 
-See the [full API reference](https://docs.pears.com/reference/bare/modules/bare-atomics).
+See the [`bare-atomics` reference](https://docs.pears.com/reference/bare/modules/bare-atomics).
 
 ## License
 
