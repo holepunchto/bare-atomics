@@ -5,7 +5,7 @@ interface MutexOptions {
 export class Mutex {
   /**
    * @param opts - Options; set `recursive: true` to let the owning thread lock the mutex more than
-   * once (default `false`). May also carry an existing `handle` to wrap.
+   * once (default `false`). To wrap an existing handle, use `Mutex.from()`.
    */
   constructor(opts?: MutexOptions)
 
@@ -56,15 +56,11 @@ export class Semaphore {
 
   handle: SharedArrayBuffer
 
-  /**
-   * @throws The associated mutex is not held by the current thread.
-   */
+  /** Block until the value of the semaphore is positive, then decrement it. */
   wait(): void
   tryWait(): boolean
   post(): void
-  /**
-   * @throws The mutex is still held.
-   */
+  /** Destroy the semaphore. */
   destroy(): void
 }
 
