@@ -1,6 +1,6 @@
 const test = require('brittle')
 const { Semaphore } = require('..')
-const { Thread } = Bare
+const Thread = require('bare-thread')
 
 test('semaphore', (t) => {
   const semaphore = new Semaphore(1)
@@ -8,11 +8,7 @@ test('semaphore', (t) => {
 
   semaphore.wait()
 
-  const thread = new Thread(__filename, { data: semaphore.handle }, (handle) => {
-    const { Semaphore } = require('..')
-
-    Semaphore.from(handle).post()
-  })
+  const thread = new Thread(require.resolve('./fixtures/semaphore'), { data: semaphore.handle })
 
   semaphore.wait()
 
